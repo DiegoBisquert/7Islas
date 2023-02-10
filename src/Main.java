@@ -3,6 +3,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+    //Variables estaticas
     static Scanner sc = new Scanner(System.in);
     static Random random = new Random();
     static Baraja mazo = new Baraja();
@@ -32,13 +33,41 @@ public class Main {
         tablero = new Tablero(mazo,random);
 
         //Jugador inicial y su primer turno
-        jugadorInicial = random.nextInt(0,jugadores.size());
+        jugadorInicial = random.nextInt(0, jugadores.size());
+        System.out.println("Empieza jugando " + jugadores.get(jugadorInicial).getNombre());
+        for (int i = jugadorInicial; i < jugadores.size(); i++) {
+            System.out.println("Cartas mazo: " + mazo.size());
+            System.out.println("Turno de " + jugadores.get(i).getNombre());
+            tirarDados(jugadores.get(i));
+            do {
+                nop = false;
+                opcionMenu = menu(jugadores.get(i));
+                switch (opcionMenu){
+                    case 1:
+                        jugadores.get(i).sumarTesoro(tablero.darCarta((jugadores.get(i).getIsla()-1)));
+                        break;
+                    case 2:
+                        islaViajar = preguntarViaje(jugadores.get(i));
+                        if (islaViajar == 8){
+                            nop = true;
+                        } else {
+                            viajarIsla(islaViajar, jugadores.get(i));
+                        }
+                        break;
+                    case 3:
+                        jugadores.get(i).mostrarTesoros();
+                }
+            }while (opcionMenu==3 || nop);
+            tablero.rellenarIslas(mazo,random);
+        }
 
+        //Resto del juego
         do {
             for (int i = 0; i < jugadores.size(); i++) {
                 System.out.println("Cartas mazo: " + mazo.size());
                 System.out.println("Turno de " + jugadores.get(i).getNombre());
                 tirarDados(jugadores.get(i));
+                //Decisiones del jugador
                 do {
                     nop = false;
                     opcionMenu = menu(jugadores.get(i));
@@ -61,8 +90,28 @@ public class Main {
                 tablero.rellenarIslas(mazo,random);
             }
         }while (mazo.size()>0);
+
+        //comprobar los resultados del juego
+        comprobarResultado();
     }
 
+    //Comprueba el resultado y escoge un ganador
+    private static void comprobarResultado() {
+        String ganador = jugadores.get(0).getNombre();
+        int mayor = 0;
+        for (Jugador j:jugadores) {
+            j.calcularPuntuacion();
+            System.out.println("Puntuación de " + j.getNombre() + ": " + j.getPuntuacion());
+            if (j.getPuntuacion()>mayor){
+                mayor = j.getPuntuacion();
+                ganador = j.getNombre();
+            }
+        }
+
+        System.out.println("El ganador es " + ganador + " con una puntuación de " + mayor);
+    }
+
+    //Recorre las rutas para la isla a la que viajamos
     private static void viajarIsla(int islaViajar, Jugador jugador) {
         int isla = jugador.getIsla();
         int diferencia = islaViajar - isla;
@@ -90,6 +139,8 @@ public class Main {
         }
     }
 
+
+    //Pregunta si quieres gastar y viajar a otra isla o no
     private static int getOpcion(int diferencia, int opcion) {
         do {
             try {
@@ -107,6 +158,7 @@ public class Main {
         return opcion;
     }
 
+    //Hace la accion de viajar a la otra isla y coger el tesoro
     private static void viaje(int islaViajar, Jugador jugador, int isla, int opcion, int diferencia) {
         opcion = getOpcion(diferencia, opcion);
         if (opcion == 1) {
@@ -117,6 +169,7 @@ public class Main {
         }
     }
 
+    //Elimina las cartas sacrificadas para viajar a otra isla
     private static void pagarCartas(Jugador jugador, int diferencia) {
         int opcion = 0;
         boolean x = false;
@@ -154,6 +207,7 @@ public class Main {
 
     }
 
+    //Pregunta a que isla quiere viajar
     private static int preguntarViaje(Jugador j) {
         int isla = 0;
         int diferencia = 0;
@@ -195,6 +249,7 @@ public class Main {
         return isla;
     }
 
+    //Menu de juego
     private static int menu(Jugador j) {
         int opcion = 0;
 
@@ -220,12 +275,14 @@ public class Main {
         return opcion;
     }
 
+    //Tira los dados y decida en que isla está el jugador
     private static void tirarDados(Jugador j) {
         int dado = random.nextInt(1,7);
         System.out.println("El dado ha sacado " + dado);
         j.setIsla(dado);
     }
 
+    //Crea los jugadores
     private static Jugador crearJugador(int i) {
         String nombre;
         boolean repe;
@@ -274,6 +331,7 @@ public class Main {
         return new Jugador(nombre);
     }
 
+    //Pregunta la cantidad de jugadores en la partida
     private static int cantidadJugadores() {
         int jugadores = 0;
 

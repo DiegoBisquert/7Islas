@@ -2,8 +2,10 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Baraja {
+    //Mazo de cartas
     private ArrayList<String> mazo = new ArrayList<>();
 
+    //Constructor
     public Baraja() {
         String[] tres = {"cáliz","rubí","diamante"};
         String[] cuatro = {"collar","mapa","corona"};
@@ -32,16 +34,12 @@ public class Baraja {
         }
     }
 
-    public void imprimir(){
-        for (String carta:mazo) {
-            System.out.println(carta);
-        }
-    }
-
+    //Elimina y da una carta
     public String darCarta(int num){
         return mazo.remove(num);
     }
 
+    //Devuelve la cantidad de cartas en el mazo
     public int size(){
         return mazo.size();
     }
