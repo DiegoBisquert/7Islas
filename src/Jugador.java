@@ -1,6 +1,8 @@
 public class Jugador {
     //Info del jugador
     private final String nombre;
+    private int isla;
+    private int puntuacion;
     private int doblones;
 
     //Array int con la cantidad de cada tesoro
@@ -9,11 +11,21 @@ public class Jugador {
 
     public Jugador(String nombre) {
         this.nombre = nombre;
+        isla = 1;
+        puntuacion = 0;
         doblones = 3;
         //Cantidad de tesoros
         for (int i = 0; i < tesoros.length; i++) {
             tesoros[i] = 0;
         }
+    }
+
+    public int getIsla() {
+        return isla;
+    }
+
+    public void setIsla(int isla) {
+        this.isla = isla;
     }
 
     public String getNombre() {
@@ -52,6 +64,38 @@ public class Jugador {
                     System.out.println("Barriles: " + tesoros[i]);
                     break;
             }
+        }
+    }
+
+    public void sumarTesoro(String tesoro){
+        switch (tesoro){
+            case "cáliz":
+                tesoros[0]++;
+                break;
+            case "rubí":
+                tesoros[1]++;
+                break;
+            case "diamante":
+                tesoros[2]++;
+                break;
+            case "collar":
+                tesoros[3]++;
+                break;
+            case "mapa":
+                tesoros[4]++;
+                break;
+            case "corona":
+                tesoros[5]++;
+                break;
+            case "revólver":
+                tesoros[6]++;
+                break;
+            case "espada":
+                tesoros[7]++;
+                break;
+            case "barril":
+                tesoros[8]++;
+                break;
         }
     }
 }

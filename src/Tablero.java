@@ -7,7 +7,7 @@ public class Tablero {
         rellenarIslas(mazo, random);
     }
 
-    private void rellenarIslas(Baraja mazo, Random random) {
+    public void rellenarIslas(Baraja mazo, Random random) {
         for (int i = 0; i < tablero.length; i++) {
             if (tablero[i] == null) {
                 tablero[i] = mazo.darCarta(random.nextInt(0, mazo.size()));
@@ -15,9 +15,19 @@ public class Tablero {
         }
     }
 
-    public void imprimir(){
+    public void imprimir(int isla){
         for (int i = 0; i < tablero.length; i++) {
-            System.out.println("Isla " + (i+1) + ": " + tablero[i]);
+            if (isla == i+1){
+                System.out.println(">Isla " + (i+1) + ": " + tablero[i]);
+            } else {
+                System.out.println("Isla " + (i + 1) + ": " + tablero[i]);
+            }
         }
+    }
+
+    public String darCarta(int i){
+        String tesoro = tablero[i];
+        tablero[i] = null;
+        return tesoro;
     }
 }
