@@ -36,18 +36,23 @@ public class Main {
 
         do {
             for (int i = 0; i < jugadores.size(); i++) {
-                nop = false;
+                System.out.println("Cartas mazo: " + mazo.size());
                 System.out.println("Turno de " + jugadores.get(i).getNombre());
                 tirarDados(jugadores.get(i));
                 do {
+                    nop = false;
                     opcionMenu = menu(jugadores.get(i));
                     switch (opcionMenu){
                         case 1:
-                            jugadores.get(i).sumarTesoro(tablero.darCarta(i));
+                            jugadores.get(i).sumarTesoro(tablero.darCarta((jugadores.get(i).getIsla()-1)));
                             break;
                         case 2:
                             islaViajar = preguntarViaje(jugadores.get(i));
-                            viajarIsla(islaViajar,jugadores.get(i));
+                            if (islaViajar == 8){
+                                nop = true;
+                            } else {
+                                viajarIsla(islaViajar, jugadores.get(i));
+                            }
                             break;
                         case 3:
                             jugadores.get(i).mostrarTesoros();
@@ -60,19 +65,32 @@ public class Main {
 
     private static void viajarIsla(int islaViajar, Jugador jugador) {
         int isla = jugador.getIsla();
-        int diferencia;
+        int diferencia = islaViajar - isla;
         int opcion = 0;
+        String carta;
 
-        if (islaViajar>isla){
-            diferencia = islaViajar - isla;
-            viaje(isla, jugador, islaViajar, opcion, tablero.darCarta(islaViajar), diferencia);
+        if (islaViajar == 7) {
+            opcion = getOpcion(diferencia, opcion);
+            if (opcion == 1) {
+                pagarCartas(jugador,diferencia);
+                carta = mazo.darCarta(random.nextInt(0, mazo.size()));
+                System.out.println("Te ha tocado " + carta);
+                jugador.sumarTesoro(carta);
+            } else {
+                nop = true;
+            }
         } else {
-            diferencia = isla - islaViajar;
-            viaje(islaViajar, jugador, isla, opcion, tablero.darCarta(islaViajar), diferencia);
+            if (islaViajar > isla) {
+                diferencia = islaViajar - isla;
+                viaje(isla, jugador, islaViajar, opcion, diferencia);
+            } else {
+                diferencia = isla - islaViajar;
+                viaje(islaViajar, jugador, isla, opcion, diferencia);
+            }
         }
     }
 
-    private static void viaje(int islaViajar, Jugador jugador, int isla, int opcion, String s, int diferencia) {
+    private static int getOpcion(int diferencia, int opcion) {
         do {
             try {
                 System.out.println("Debes gastar " + diferencia + " cartas, ¿Quieres hacerlo? 1-si 2-no");
@@ -86,15 +104,15 @@ public class Main {
                 System.out.println("opción inválida, inténtalo de nuevo");
             }
         }while (opcion<0);
+        return opcion;
+    }
+
+    private static void viaje(int islaViajar, Jugador jugador, int isla, int opcion, int diferencia) {
+        opcion = getOpcion(diferencia, opcion);
         if (opcion == 1) {
-            if (jugador.totalTesoro()>=diferencia){
                 pagarCartas(jugador,diferencia);
-                jugador.sumarTesoro(s);
-            } else {
-                System.out.println("No tienes suficientes cartas");
-                nop = true;
-            }
-        } else {
+                jugador.sumarTesoro(tablero.darCarta((islaViajar)));
+         } else {
             nop = true;
         }
     }
@@ -105,6 +123,7 @@ public class Main {
 
         for (int i = 0; i < diferencia; i++) {
             do {
+                x = false;
                 do {
                     try {
                         System.out.println("Carta número " + (i+1) + " que quieres gastar:");
@@ -159,9 +178,17 @@ public class Main {
                 System.out.println("ya estás en esta isla, escoge otra");
                 isla = 0;
             }
-            if (j.getIsla() > isla){
-                diferencia = j.getIsla() - isla;
 
+            if (isla < 8) {
+                if (j.getIsla() > isla) {
+                    diferencia = j.getIsla() - isla;
+                } else {
+                    diferencia = isla - j.getIsla();
+                }
+                if (diferencia > j.totalTesoro()) {
+                    System.out.println("No tienes suficientes cartas, escoge otra isla");
+                    isla = 0;
+                }
             }
         }while (isla<1);
 

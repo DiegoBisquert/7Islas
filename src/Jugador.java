@@ -82,7 +82,7 @@ public class Jugador {
     }
 
     public boolean restarTesoro(int i){
-        if (tesoros[i]>=0) {
+        if (tesoros[i]>0) {
             tesoros[i]--;
             return true;
         }
