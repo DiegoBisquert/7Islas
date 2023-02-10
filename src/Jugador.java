@@ -33,37 +33,9 @@ public class Jugador {
     }
 
     public void mostrarTesoros(){
-        System.out.println("Doblones: " + doblones);
+        System.out.println("1- Doblones: " + doblones);
         for (int i = 0; i < tesoros.length; i++) {
-            switch (i){
-                case 0:
-                    System.out.println("Calices: " + tesoros[i]);
-                    break;
-                case 1:
-                    System.out.println("Rubies: " + tesoros[i]);
-                    break;
-                case 2:
-                    System.out.println("Diamantes: " + tesoros[i]);
-                    break;
-                case 3:
-                    System.out.println("Collares: " + tesoros[i]);
-                    break;
-                case 4:
-                    System.out.println("Mapas: " + tesoros[i]);
-                    break;
-                case 5:
-                    System.out.println("Coronas: " + tesoros[i]);
-                    break;
-                case 6:
-                    System.out.println("Revolveres: " + tesoros[i]);
-                    break;
-                case 7:
-                    System.out.println("Espadas: " + tesoros[i]);
-                    break;
-                case 8:
-                    System.out.println("Barriles: " + tesoros[i]);
-                    break;
-            }
+            tesoros(i);
         }
     }
 
@@ -97,5 +69,63 @@ public class Jugador {
                 tesoros[8]++;
                 break;
         }
+    }
+
+    public int totalTesoro(){
+        int sum = doblones;
+
+        for (int i = 0; i < tesoros.length; i++) {
+            sum += tesoros[i];
+        }
+
+        return sum;
+    }
+
+    public boolean restarTesoro(int i){
+        if (tesoros[i]>=0) {
+            tesoros[i]--;
+            return true;
+        }
+        return false;
+    }
+
+    private void tesoros(int i) {
+        switch (i) {
+            case 0:
+                System.out.println("2-Calices: " + tesoros[i]);
+                break;
+            case 1:
+                System.out.println("3-Rubies: " + tesoros[i]);
+                break;
+            case 2:
+                System.out.println("4-Diamantes: " + tesoros[i]);
+                break;
+            case 3:
+                System.out.println("5-Collares: " + tesoros[i]);
+                break;
+            case 4:
+                System.out.println("6-Mapas: " + tesoros[i]);
+                break;
+            case 5:
+                System.out.println("7-Coronas: " + tesoros[i]);
+                break;
+            case 6:
+                System.out.println("8-Revolveres: " + tesoros[i]);
+                break;
+            case 7:
+                System.out.println("9-Espadas: " + tesoros[i]);
+                break;
+            case 8:
+                System.out.println("10-Barriles: " + tesoros[i]);
+                break;
+        }
+    }
+
+    public boolean restarDoblon(){
+        if (doblones>0) {
+            doblones--;
+            return true;
+        }
+        return false;
     }
 }

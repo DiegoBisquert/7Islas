@@ -8,6 +8,7 @@ public class Main {
     static Baraja mazo = new Baraja();
     static Tablero tablero;
     static ArrayList<Jugador> jugadores = new ArrayList<>();
+    static boolean nop;
     public static void main(String[] args) {
         //variables
         int numJugadores = 0;
@@ -35,6 +36,7 @@ public class Main {
 
         do {
             for (int i = 0; i < jugadores.size(); i++) {
+                nop = false;
                 System.out.println("Turno de " + jugadores.get(i).getNombre());
                 tirarDados(jugadores.get(i));
                 do {
@@ -50,32 +52,116 @@ public class Main {
                         case 3:
                             jugadores.get(i).mostrarTesoros();
                     }
-                }while (opcionMenu==3);
+                }while (opcionMenu==3 || nop);
                 tablero.rellenarIslas(mazo,random);
             }
         }while (mazo.size()>0);
     }
 
     private static void viajarIsla(int islaViajar, Jugador jugador) {
+        int isla = jugador.getIsla();
+        int diferencia;
+        int opcion = 0;
+
+        if (islaViajar>isla){
+            diferencia = islaViajar - isla;
+            viaje(isla, jugador, islaViajar, opcion, tablero.darCarta(islaViajar), diferencia);
+        } else {
+            diferencia = isla - islaViajar;
+            viaje(islaViajar, jugador, isla, opcion, tablero.darCarta(islaViajar), diferencia);
+        }
+    }
+
+    private static void viaje(int islaViajar, Jugador jugador, int isla, int opcion, String s, int diferencia) {
+        do {
+            try {
+                System.out.println("Debes gastar " + diferencia + " cartas, ¿Quieres hacerlo? 1-si 2-no");
+                opcion = sc.nextInt();
+            }catch (Exception e){
+                sc.nextLine();
+            }
+
+            if (opcion<1 || opcion>2) {
+                opcion = -1;
+                System.out.println("opción inválida, inténtalo de nuevo");
+            }
+        }while (opcion<0);
+        if (opcion == 1) {
+            if (jugador.totalTesoro()>=diferencia){
+                pagarCartas(jugador,diferencia);
+                jugador.sumarTesoro(s);
+            } else {
+                System.out.println("No tienes suficientes cartas");
+                nop = true;
+            }
+        } else {
+            nop = true;
+        }
+    }
+
+    private static void pagarCartas(Jugador jugador, int diferencia) {
+        int opcion = 0;
+        boolean x = false;
+
+        for (int i = 0; i < diferencia; i++) {
+            do {
+                do {
+                    try {
+                        System.out.println("Carta número " + (i+1) + " que quieres gastar:");
+                        jugador.mostrarTesoros();
+                        opcion = sc.nextInt();
+                    }catch (Exception e){
+                        sc.nextLine();
+                    }
+
+                    if (opcion<1 || opcion>10) {
+                        opcion = -1;
+                        System.out.println("opción inválida, inténtalo de nuevo");
+                    }
+                }while (opcion<0);
+                if (opcion == 1){
+                    if (!jugador.restarDoblon()){
+                        System.out.println("No tienes suficientes");
+                        x = true;
+                    }
+                } else {
+                    if (!jugador.restarTesoro(opcion-2)){
+                        System.out.println("No tienes suficientes");
+                        x = true;
+                    }
+                }
+            }while (x);
+        }
 
     }
 
     private static int preguntarViaje(Jugador j) {
         int isla = 0;
+        int diferencia = 0;
 
         do {
             try {
                 System.out.println("¿A que isla quieres viajar?");
                 tablero.imprimir(j.getIsla());
                 System.out.println("Isla 7: mazo");
+                System.out.println("8-Volver");
                 isla = sc.nextInt();
             }catch (Exception e){
                 sc.nextLine();
             }
 
-            if (isla<1 || isla>7) {
+            if (isla<1 || isla>8) {
                 isla = 0;
                 System.out.println("Opción inválida, inténtalo  de nuevo");
+            }
+
+            if (j.getIsla() == isla){
+                System.out.println("ya estás en esta isla, escoge otra");
+                isla = 0;
+            }
+            if (j.getIsla() > isla){
+                diferencia = j.getIsla() - isla;
+
             }
         }while (isla<1);
 
